@@ -1,14 +1,14 @@
 import MCP3008
 
-class AQSensor:
+class MiCS2710:
 	adc = None
-	adcPin = 0
+	adcPin = 2
 	
 	def __init__(self, adc, adcNumber):
 		self.adc = adc
 		self.adcPin = adcNumber
 	
-	def get_quality(self):
+	def get_NO(self):
 		result = self.adc.readADC(self.adcPin) + 1
 		vout = float(result)/1023 * 3.3
 		rs = ((5.0 - vout) / vout)
