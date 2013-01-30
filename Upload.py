@@ -74,11 +74,11 @@ while(True):
 	lightlevels = "%.2f" % lightlevels
 
 	if LOGGER:
-		# Append the data in the spreadsheet, including a timestamp
+		#Attempt to submit the data to cosm
 		try:
 			pac = eeml.Pachube(API_URL, API_KEY)
 			if temp!=False:
-				pac.update([eeml.Data(0, bmptemp, unit = eeml.Celsius())])    
+				pac.update([eeml.Data(0, bmptemp)])    
 				pac.update([eeml.Data(1, humidity)])
 			pac.update([eeml.Data(2, aq)])
 			pac.update([eeml.Data(3, lightlevels)])
@@ -96,7 +96,7 @@ while(True):
 				subprocess.call(["sudo", "/etc/init.d/networking", "restart"])
 				failCount=0
 	for a in range(0,5):
-		time.sleep(1)
+		time.sleep(4)
 		GPIO.output(22, False)
 		GPIO.output(21, False)
-		#dht.get_data() #constantly get data from DHT, but only save it if it validates.
+		dht.get_data() #constantly get data from DHT, but only save it if it validates.
