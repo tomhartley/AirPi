@@ -4,12 +4,12 @@ class AQSensor:
 	adc = None
 	adcPin = 0
 	
-	def __init__(self, adc, adcNumber):
+	def __init__(self, adc, adcNumber, pullup = 10000):
 		self.adc = adc
 		self.adcPin = adcNumber
+		self.pullup = pullup
 	
 	def get_quality(self):
-		result = self.adc.readADC(self.adcPin) + 1
-		vout = float(result)/1023 * 3.3
-		rs = ((5.0 - vout) / vout)
-		return rs
+		result = float(self.adc.readADC(self.adcPin))
+		resistance = (1550/result - 1)*self.pullup
+		return resistance
