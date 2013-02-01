@@ -12,4 +12,4 @@ class LightSensor:
 		result = self.adc.readADC(self.adcPin) + 1
 		vout = float(result)/1023 * 3.3
 		rs = ((3.3 - vout) / vout) * 5.6
-		return rs
+		return abs(rs)

@@ -36,8 +36,8 @@ bmp = BMP085.BMP085()
 adc = MCP3008.MCP3008(SPIMOSI,SPIMISO,SPICLK,SPICS)
 airSensor = AQSensor.AQSensor(adc,AQADC,22000)
 lightSensor = LightSensor.LightSensor(adc,LightADC)
-no2Sensor = AQSensor.AQSensor(adc,NO2ADC,10000)
-coSensor = AQSensor.AQSensor(adc,COADC,100000)
+no2Sensor = AQSensor.AQSensor(adc,NO2ADC,28300,10000)
+coSensor = AQSensor.AQSensor(adc,COADC,140000,100000)
 
 API_KEY = 'AaBeQoyPHcnC8rwEN2YJJbEKrJOSAKxBa0hEN08rblZUZz0g'
 FEED = 85080
@@ -54,8 +54,10 @@ while(True):
 	bmptemp = bmp.readTemperature()
 	pressure = bmp.readPressure()
 	altitude = bmp.readAltitude()
-	NO2 = no2Sensor.get_quality()
-	CO = coSensor.get_quality()
+	NO2 = no2Sensor.get_NO2()
+	CO = coSensor.get_CO()
+	NO2res = no2Sensor.get_quality()
+	COres = coSensor.get_quality()
 	if DEBUG:
 		if temp!=False:
 			#print "Temperature: %.1f C" % temp
@@ -64,13 +66,17 @@ while(True):
 		print "Air Quality: %.2f Ohms" % aq
 		print "Light Level: %.2f Lux" % lightlevels
 		print "Pressure:    %.1f Pa" % pressure
-		print "Temp-2:      %.1f C" % bmptemp
+		print "Temperature: %.1f C" % bmptemp
 		print "Altitude:    %.1f m" % altitude
-		print "NO2:         %.2f Ohms" % NO2
-		print "CO:          %.2f Ohms" % CO
+		print "NO2:         %.3f ppm" % NO2
+		print "CO:          %.3f ppm" % CO
+		print "NO2 ohms:    %.1f Ohms" % NO2res
+                print "CO ohms:     %.1f Ohms" % COres
 	aq = "%.1f" % aq
-	CO = "%.1f" % CO
-	NO2 = "%.1f" % NO2
+	CO = "%.3f" % CO
+	NO2 = "%.3f" % NO2
+	NO2res = str(int(NO2res))
+	COres = str(int(COres))
 	lightlevels = "%.2f" % lightlevels
 
 	if LOGGER:
@@ -85,6 +91,8 @@ while(True):
 			pac.update([eeml.Data(4, pressure)])
 			pac.update([eeml.Data(5, CO)])
 			pac.update([eeml.Data(6, NO2)])
+			pac.update([eeml.Data(7, COres)])
+			pac.update([eeml.Data(8, NO2res)])
 			pac.put()
 			print "Uploaded data at " + str(datetime.datetime.now())
 			GPIO.output(22, True)
