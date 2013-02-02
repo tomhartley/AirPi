@@ -37,7 +37,7 @@ adc = MCP3008.MCP3008(SPIMOSI,SPIMISO,SPICLK,SPICS)
 airSensor = AQSensor.AQSensor(adc,AQADC,22000)
 lightSensor = LightSensor.LightSensor(adc,LightADC)
 no2Sensor = AQSensor.AQSensor(adc,NO2ADC,28300,10000)
-coSensor = AQSensor.AQSensor(adc,COADC,140000,100000)
+coSensor = AQSensor.AQSensor(adc,COADC,190000,100000)
 
 API_KEY = 'AaBeQoyPHcnC8rwEN2YJJbEKrJOSAKxBa0hEN08rblZUZz0g'
 FEED = 85080
