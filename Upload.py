@@ -3,11 +3,13 @@
 import time
 import datetime
 import eeml
-import subprocess
+import subprocess, os, sys
 import RPi.GPIO as GPIO
 from interfaces.DHT22 import DHT22
 from interfaces.BMP085 import BMP085
 from interfaces.MCP3008 import MCP3008, AQSensor, LightSensor
+
+os.chdir(os.path.dirname(sys.argv[0]))
 
 DEBUG = 1
 LOGGER = 1
@@ -36,7 +38,7 @@ bmp = BMP085.BMP085()
 adc = MCP3008.MCP3008(SPIMOSI,SPIMISO,SPICLK,SPICS)
 airSensor = AQSensor.AQSensor(adc,AQADC,22000)
 lightSensor = LightSensor.LightSensor(adc,LightADC)
-no2Sensor = AQSensor.AQSensor(adc,NO2ADC,28300,10000)
+no2Sensor = AQSensor.AQSensor(adc,NO2ADC,90000,10000)
 coSensor = AQSensor.AQSensor(adc,COADC,190000,100000)
 
 API_KEY = 'AaBeQoyPHcnC8rwEN2YJJbEKrJOSAKxBa0hEN08rblZUZz0g'
@@ -83,8 +85,8 @@ while(True):
 		#Attempt to submit the data to cosm
 		try:
 			pac = eeml.Pachube(API_URL, API_KEY)
+			pac.update([eeml.Data(0, bmptemp)])
 			if temp!=False:
-				pac.update([eeml.Data(0, bmptemp)])    
 				pac.update([eeml.Data(1, humidity)])
 			pac.update([eeml.Data(2, aq)])
 			pac.update([eeml.Data(3, lightlevels)])
@@ -103,8 +105,12 @@ while(True):
 			if failCount>2:
 				subprocess.call(["sudo", "/etc/init.d/networking", "restart"])
 				failCount=0
-	for a in range(0,5):
-		time.sleep(4)
-		GPIO.output(22, False)
-		GPIO.output(21, False)
-		dht.get_data() #constantly get data from DHT, but only save it if it validates.
+	time.sleep(1)
+	GPIO.output(22, False)
+	GPIO.output(21, False)
+	time.sleep(0)
+	#for a in range(0,5):
+	#	time.sleep(0.2)
+	#	GPIO.output(22, False)
+	#	GPIO.output(21, False)
+	#	#dht.get_data() #constantly get data from DHT, but only save it if it validates.
