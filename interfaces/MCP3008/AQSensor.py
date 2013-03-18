@@ -12,7 +12,10 @@ class AQSensor:
 	
 	def get_quality(self):
 		result = float(self.adc.readADC(self.adcPin))
-		resistance = (1550/result - 1)*self.pullup
+		if result == 0:
+			resistance = 0
+		else:
+			resistance = (1550/result - 1)*self.pullup
 		return resistance
 	
 	def get_NO2(self):
