@@ -25,7 +25,7 @@ class DataPoint():
 		return formatString.format(self.value)
 
 def mainUpload(stdscr):
-	wdog = os.open('/dev/watchdog',os.O_RDWR)
+	#wdog = os.open('/dev/watchdog',os.O_RDWR)
 	try:
 		bus = 0
 		
@@ -83,7 +83,7 @@ def mainUpload(stdscr):
 		
 		# Continuously append data
 		while(True):
-			os.write(wdog,"0")
+			#os.write(wdog,"0")
 			datas = []
 			dht.get_data()
 			d = DataPoint(dht.temp(),"Temp-DHT","C",1,-1)
@@ -100,9 +100,17 @@ def mainUpload(stdscr):
 			datas.append(DataPoint(coSensor.get_CO(),"CO","ppm",3,5,"CO"))
 			datas.append(DataPoint(no2Sensor.get_quality(),"NO2 ohms","ohms",1,8))
 			datas.append(DataPoint(coSensor.get_quality(),"CO ohms","ohms",1,7))
-			if DEBUG:
+			if DEBUG and (stdscr == None):
 				for dp in datas:
 					print dp.name + ":\t" + dp.roundedValue() + " " + dp.unit
+			if stdscr != None:
+				a = 0
+				for dp in datas:
+					if dp.uploadID != -1:
+						a+=1
+						stdscr.addstr(5 + (a * 2), 3, dp.name + ":\t" + dp.roundedValue() + " " + dp.unit)
+						stdscr.clrtoeol()
+				stdscr.refresh() 
 			if LOGGER:
 				#Attempt to submit the data to cosm
 				try:
@@ -111,7 +119,8 @@ def mainUpload(stdscr):
 						if dp.uploadID!=-1:
 							pac.update([eeml.Data(dp.uploadID, dp.roundedValue())])
 					pac.put()
-					print "Uploaded data at " + str(datetime.datetime.now())
+					if stdscr == None:
+						print "Uploaded data at " + str(datetime.datetime.now())
 					GPIO.output(22, True)
 					if LCDENABLED:		
 						lcd.backlight(lcd.GREEN)
