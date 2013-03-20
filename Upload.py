@@ -25,7 +25,7 @@ class DataPoint():
 		return formatString.format(self.value)
 
 def mainUpload(stdscr):
-	#wdog = os.open('/dev/watchdog',os.O_RDWR)
+	wdog = os.open('/dev/watchdog',os.O_RDWR)
 	try:
 		bus = 0
 		
@@ -83,7 +83,7 @@ def mainUpload(stdscr):
 		
 		# Continuously append data
 		while(True):
-			#os.write(wdog,"0")
+			os.write(wdog,"0")
 			datas = []
 			dht.get_data()
 			d = DataPoint(dht.temp(),"Temp-DHT","C",1,-1)
