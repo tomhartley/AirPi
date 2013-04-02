@@ -239,3 +239,8 @@ class BMP085 :
     return altitude
 
     return 0
+
+if __name__=="__main__":
+	bmp = BMP085()
+	print str(bmp.readTemperature()) + " C"
+	print str(bmp.readPressure()) + " Pa"

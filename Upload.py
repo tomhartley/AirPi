@@ -25,7 +25,10 @@ class DataPoint():
 		return formatString.format(self.value)
 
 def mainUpload(stdscr):
-	wdog = os.open('/dev/watchdog',os.O_RDWR)
+	WDOGON = 0
+	if WDOGON:
+		sleep(1)
+		wdog = os.open('/dev/watchdog',os.O_RDWR)
 	try:
 		bus = 0
 		
@@ -83,7 +86,8 @@ def mainUpload(stdscr):
 		
 		# Continuously append data
 		while(True):
-			os.write(wdog,"0")
+			if WDOGON:
+				os.write(wdog,"0")
 			datas = []
 			dht.get_data()
 			d = DataPoint(dht.temp(),"Temp-DHT","C",1,-1)
@@ -133,7 +137,7 @@ def mainUpload(stdscr):
 						lcd.backlight(lcd.ON)
 					print "Unable to upload data at " + str(datetime.datetime.now()) + ".  Check your connection?"
 					failCount+=1
-					if failCount>3:
+					if failCount>15:
 						subprocess.Popen(["sudo", "/etc/init.d/networking", "restart"])
 						failCount=0
 	
@@ -153,8 +157,9 @@ def mainUpload(stdscr):
 			if currentDisplay == 4:
 				currentDisplay = 0
 	except KeyboardInterrupt:
-		os.write(wdog,"V")
-		os.close(wdog)
+		if WDOGON:
+			os.write(wdog,"V")
+			os.close(wdog)
 		raise	
 
 cursesEnabled = 0
