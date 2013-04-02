@@ -5,7 +5,6 @@ import datetime
 import eeml
 import subprocess, os, sys
 import RPi.GPIO as GPIO
-from asciigraph import *
 from interfaces.DHT22 import DHT22
 from interfaces.BMP085 import BMP085
 from interfaces.MCP3008 import MCP3008, AQSensor, LightSensor
