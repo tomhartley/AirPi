@@ -8,7 +8,7 @@ import subprocess, os, sys
 import RPi.GPIO as GPIO
 from interfaces.DHT22 import DHT22
 from interfaces.BMP085 import BMP085
-from interfaces.MCP3008 import MCP3008, AQSensor, LightSensor
+from interfaces.MCP3008 import MCP3008, MCP3208, AQSensor, LightSensor
 from interfaces.PiPlate import Adafruit_CharLCDPlate
 import curses
 
