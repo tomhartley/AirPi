@@ -35,7 +35,7 @@ def mainUpload(stdscr):
 		LCDENABLED = 1
 		DEBUG = 1
 		LOGGER = 1
-		
+
 		if LCDENABLED:
 			lcd = Adafruit_CharLCDPlate.Adafruit_CharLCDPlate(busnum=bus)
 			lcd.clear()
@@ -52,6 +52,8 @@ def mainUpload(stdscr):
 	
 		DHTPin = 4
 		
+		if not DEBUG:
+	                GPIO.setwarnings(False)
 		GPIO.setmode(GPIO.BCM)
 		GPIO.setup(22,GPIO.OUT)
 		GPIO.setup(21,GPIO.OUT)
