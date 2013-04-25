@@ -8,9 +8,9 @@ import smbus
 
 class Adafruit_I2C :
 
-  def __init__(self, address, bus=smbus.SMBus(0), debug=False):
+  def __init__(self, address, bus=0, debug=False):
     self.address = address
-    self.bus = bus
+    self.bus = smbus.SMBus(bus)
     self.debug = debug
 
   def reverseByteOrder(self, data):

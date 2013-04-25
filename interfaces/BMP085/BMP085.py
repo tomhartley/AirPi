@@ -48,8 +48,8 @@ class BMP085 :
   _cal_MD = 0
 
   # Constructor
-  def __init__(self, address=0x77, mode=1, debug=False):
-    self.i2c = Adafruit_I2C(address)
+  def __init__(self, address=0x77, mode=1, bus=0, debug=False):
+    self.i2c = Adafruit_I2C(address, bus)
 
     self.address = address
     self.debug = debug

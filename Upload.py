@@ -67,7 +67,7 @@ def mainUpload(stdscr):
 		UVADC = 4
 		
 		dht = DHT22.DHT22(DHTPin)
-		bmp = BMP085.BMP085()
+		bmp = BMP085.BMP085(bus=bus)
 		adc = MCP3008.MCP3008(SPIMOSI,SPIMISO,SPICLK,SPICS)
 		airSensor = AQSensor.AQSensor(adc,AQADC,pullup=22000)
 		lightSensor = LightSensor.LightSensor(adc,LightADC)
