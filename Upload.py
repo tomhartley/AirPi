@@ -69,7 +69,7 @@ def mainUpload(stdscr):
 		dht = DHT22.DHT22(DHTPin)
 		bmp = BMP085.BMP085()
 		adc = MCP3008.MCP3008(SPIMOSI,SPIMISO,SPICLK,SPICS)
-		airSensor = AQSensor.AQSensor(adc,AQADC,22000)
+		airSensor = AQSensor.AQSensor(adc,AQADC,pullup=22000)
 		lightSensor = LightSensor.LightSensor(adc,LightADC)
 		uvSensor = LightSensor.LightSensor(adc,UVADC)
 		no2Sensor = AQSensor.AQSensor(adc,NO2ADC,90000,10000)
