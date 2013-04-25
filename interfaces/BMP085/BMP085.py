@@ -1,6 +1,9 @@
 #!/usr/bin/python
+#!/usr/bin/python
 
 import time
+import math
+
 from Adafruit_I2C import Adafruit_I2C
 
 # ===========================================================================
@@ -239,6 +242,14 @@ class BMP085 :
     return altitude
 
     return 0
+
+  def readMSLPressure(self, altitude):
+    "Calculates the mean sea level pressure"
+    pressure = float(self.readPressure())
+    T0 = float(altitude) / 44330
+    T1 = math.pow(1 - T0, 5.255)
+    mslpressure = pressure / T1
+    return mslpressure
 
 if __name__=="__main__":
 	bmp = BMP085()
