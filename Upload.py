@@ -79,8 +79,8 @@ def mainUpload(stdscr):
 		coSensor = AQSensor.AQSensor(adc,COADC,190000,100000)
 		
 		
-		API_KEY = 'AaBeQoyPHcnC8rwEN2YJJbEKrJOSAKxBa0hEN08rblZUZz0g'
-		FEED = 85080
+		API_KEY = 'YOURAPIKEY'
+		FEED = 00000
 		
 		API_URL = '/v2/feeds/{feednum}.xml' .format(feednum=FEED)
 		failCount = 0
