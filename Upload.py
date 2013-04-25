@@ -3,6 +3,7 @@
 from time import sleep
 import datetime
 import eeml
+import eeml.datastream
 import subprocess, os, sys
 import RPi.GPIO as GPIO
 from interfaces.DHT22 import DHT22
@@ -117,7 +118,7 @@ def mainUpload(stdscr):
 			if LOGGER:
 				#Attempt to submit the data to cosm
 				try:
-					pac = eeml.Pachube(API_URL, API_KEY)
+					pac = eeml.datastream.Cosm(API_URL, API_KEY)
 					for dp in datas:
 						if dp.uploadID!=-1:
 							pac.update([eeml.Data(dp.uploadID, dp.roundedValue())])
