@@ -15,7 +15,8 @@ class AQSensor:
 		if result == 0:
 			resistance = 0
 		else:
-			resistance = (1550/result - 1)*self.pullup
+			vin = ((2**self.adc.ADCBITS) / 3.3) * 5
+			resistance = (vin/result - 1)*self.pullup
 		return resistance
 	
 	def get_NO2(self):

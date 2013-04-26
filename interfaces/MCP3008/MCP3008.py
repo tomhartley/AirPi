@@ -7,6 +7,7 @@ class MCP3008:
 	SPIMISO = 0
 	SPICLK = 0
 	SPICS = 0
+        ADCBITS=10
 
 	def __init__(self, mosipin, misopin, clkpin, cspin):
 		GPIO.setmode(GPIO.BCM)
@@ -42,7 +43,7 @@ class MCP3008:
 
 		adcout = 0
 		# read in one empty bit, one null bit and 10 ADC bits
-		for i in range(12):
+		for i in range(self.ADCBITS+1):
 			GPIO.output(self.SPICLK, True)
 			GPIO.output(self.SPICLK, False)
 			adcout <<= 1
@@ -50,6 +51,4 @@ class MCP3008:
 				adcout |= 0x1
 
 		GPIO.output(self.SPICS, True)
-
-		adcout /= 2       # first bit is 'null' so drop it
 		return adcout

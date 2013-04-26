@@ -3,11 +3,12 @@
 from time import sleep
 import datetime
 import eeml
+import eeml.datastream
 import subprocess, os, sys
 import RPi.GPIO as GPIO
 from interfaces.DHT22 import DHT22
 from interfaces.BMP085 import BMP085
-from interfaces.MCP3008 import MCP3008, AQSensor, LightSensor
+from interfaces.MCP3008 import MCP3008, MCP3208, AQSensor, LightSensor
 from interfaces.PiPlate import Adafruit_CharLCDPlate
 import curses
 
@@ -34,7 +35,7 @@ def mainUpload(stdscr):
 		LCDENABLED = 1
 		DEBUG = 1
 		LOGGER = 1
-		
+
 		if LCDENABLED:
 			lcd = Adafruit_CharLCDPlate.Adafruit_CharLCDPlate(busnum=bus)
 			lcd.clear()
@@ -51,6 +52,8 @@ def mainUpload(stdscr):
 	
 		DHTPin = 4
 		
+		if not DEBUG:
+	                GPIO.setwarnings(False)
 		GPIO.setmode(GPIO.BCM)
 		GPIO.setup(22,GPIO.OUT)
 		GPIO.setup(21,GPIO.OUT)
@@ -67,17 +70,17 @@ def mainUpload(stdscr):
 		UVADC = 4
 		
 		dht = DHT22.DHT22(DHTPin)
-		bmp = BMP085.BMP085()
+		bmp = BMP085.BMP085(bus=bus)
 		adc = MCP3008.MCP3008(SPIMOSI,SPIMISO,SPICLK,SPICS)
-		airSensor = AQSensor.AQSensor(adc,AQADC,22000)
+		airSensor = AQSensor.AQSensor(adc,AQADC,pullup=22000)
 		lightSensor = LightSensor.LightSensor(adc,LightADC)
 		uvSensor = LightSensor.LightSensor(adc,UVADC)
 		no2Sensor = AQSensor.AQSensor(adc,NO2ADC,90000,10000)
 		coSensor = AQSensor.AQSensor(adc,COADC,190000,100000)
 		
 		
-		API_KEY = 'AaBeQoyPHcnC8rwEN2YJJbEKrJOSAKxBa0hEN08rblZUZz0g'
-		FEED = 85080
+		API_KEY = 'YOURAPIKEY'
+		FEED = 00000
 		
 		API_URL = '/v2/feeds/{feednum}.xml' .format(feednum=FEED)
 		failCount = 0
@@ -117,7 +120,7 @@ def mainUpload(stdscr):
 			if LOGGER:
 				#Attempt to submit the data to cosm
 				try:
-					pac = eeml.Pachube(API_URL, API_KEY)
+					pac = eeml.datastream.Cosm(API_URL, API_KEY)
 					for dp in datas:
 						if dp.uploadID!=-1:
 							pac.update([eeml.Data(dp.uploadID, dp.roundedValue())])
