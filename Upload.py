@@ -29,6 +29,11 @@ class DataPoint():
 
 
 def mainUpload(stdscr):
+	
+	try:
+		os.chdir(os.path.dirname(sys.argv[0]))
+	except:
+		pass
 	# Load the config file if it exists
         if not os.path.isfile('AirPi.cfg'):
 		print "Unable to access config file : AirPi.cfg"
@@ -59,12 +64,6 @@ def mainUpload(stdscr):
 			sleep(2)
 			lcd.clear()
 			lcd.message("Air Quality and \nWeather Station")
-	
-		try:
-			os.chdir(os.path.dirname(sys.argv[0]))
-		except:
-			pass
-	
 		
 		if not DEBUG:
 	                GPIO.setwarnings(False)
