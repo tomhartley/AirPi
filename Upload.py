@@ -13,6 +13,8 @@ from interfaces.DHT22 import DHT22
 from interfaces.BMP085 import BMP085
 from interfaces.MCP3008 import MCP3008, MCP3208, AQSensor, LightSensor
 from interfaces.PiPlate import Adafruit_CharLCDPlate
+import thinkspeak
+
 import curses
 
 class DataPoint():
@@ -139,6 +141,7 @@ def mainUpload(stdscr):
 			API_URL = '/v2/feeds/{feednum}.xml' .format(feednum=FEED)
 		failCount = 0
 		currentDisplay = 0
+		ts = thinkspeak.thinkspeak()
 		
 		# Continuously append data
 		while(True):
@@ -184,16 +187,19 @@ def mainUpload(stdscr):
 			if LOGGER:
 				#Attempt to submit the data to cosm
 				try:
-					pac = eeml.datastream.Cosm(API_URL, API_KEY)
-					for dp in datas:
-						if dp.uploadID!=-1:
-							pac.update([eeml.Data(dp.uploadID, dp.roundedValue())])
-					pac.put()
+					# pd: handle thinkspeak stuff as well
+					#ts.send(datas)
+					ts.pisend(datas)
+					#pac = eeml.datastream.Cosm(API_URL, API_KEY)
+					#for dp in datas:
+					#	if dp.uploadID!=-1:
+					#		pac.update([eeml.Data(dp.uploadID, dp.roundedValue())])
+					#pac.put()
 					if stdscr == None:
 						print "Uploaded data at " + str(datetime.datetime.now())
 					GPIO.output(22, True)
-					if LCDENABLED:		
-						lcd.backlight(lcd.GREEN)
+					#if LCDENABLED:		
+						#lcd.backlight(lcd.GREEN)
 					failCount = 0
 				except KeyboardInterrupt:
 					raise
@@ -206,6 +212,7 @@ def mainUpload(stdscr):
 						failCount+=1
 						if failCount>NETRETRIES:
 							subprocess.Popen(["sudo", "/etc/init.d/networking", "restart"])
+							subprocess.Popen(["sudo", "/sbin/dhclient", "eth0"])
 							failCount=0
 	
 			if LCDENABLED:
@@ -214,9 +221,12 @@ def mainUpload(stdscr):
 					if a.sName!=None:
 						usedValues.append(a)
 				data1 = usedValues[currentDisplay*2]
-				data2 = usedValues[currentDisplay*2 + 1]
 				lcd.clear()
-				lcd.message(data1.sName + ": " + data1.roundedValue() + " " + data1.unit + "\n" + data2.sName + ": " + data2.roundedValue() + " " + data2.unit)
+				if currentDisplay < 3:
+					data2 = usedValues[currentDisplay*2 + 1]
+					lcd.message(data1.sName + ": " + data1.roundedValue() + " " + data1.unit + "\n" + data2.sName + ": " + data2.roundedValue() + " " + data2.unit)
+				else:
+					lcd.message(data1.sName + ": " + data1.roundedValue() + " " + data1.unit + "\n")
 			sleep(FREQUENCY-1)
 			GPIO.output(22, False)
 			GPIO.output(21, False)
