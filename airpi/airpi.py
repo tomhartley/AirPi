@@ -154,21 +154,24 @@ for i in outputNames:
 lastUpdated = 0
 delayTime = 5
 while True:
-	if time.time()-lastUpdated<delayTime:
-		lastUpdate = time.time()
+	if (time.time()-lastUpdated)>delayTime:
+		lastUpdated = time.time()
 		data = []
 		#Collect the data from each sensor
 		for i in sensorPlugins:
 			dataDict = {}
-			dataDict["val"] = i.getVal()
+			dataDict["value"] = i.getVal()
 			dataDict["unit"] = i.valUnit
 			dataDict["name"] = i.valName
 			dataDict["sensor"] = i.sensorName
 			data.append(dataDict)
 		working = True
+		print "Hello"
 		for i in outputPlugins:
 			working = working and i.uploadData(data)
 		if working:
+			pass
 			#Blink Green
 		else:
+			pass
 			#Blink Red

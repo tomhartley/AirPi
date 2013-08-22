@@ -24,4 +24,4 @@ class Bmp085(sensor.Sensor):
 		return
 
 	def getVal(self):
-		return 0
+		return 0.7
