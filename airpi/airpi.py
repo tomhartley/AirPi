@@ -150,28 +150,38 @@ for i in outputNames:
 		print("Error: Did not import output plugin " + i )
 		raise e
 
+if not os.path.isfile("settings.cfg"):
+	print "Unable to access config file: settings.cfg"
+
+mainConfig = ConfigParser.SafeConfigParser()
+mainConfig.read("settings.cfg")
 
 lastUpdated = 0
-delayTime = 5
+delayTime = mainConfig.getfloat("Main","uploadDelay")
+
 while True:
-	if (time.time()-lastUpdated)>delayTime:
-		lastUpdated = time.time()
+	curTime = time.time()
+	if (curTime-lastUpdated)>delayTime:
+		lastUpdated = curTime
 		data = []
 		#Collect the data from each sensor
 		for i in sensorPlugins:
 			dataDict = {}
+			val = i.getVal()
+			if val==False: #this means it has no data to upload.
+				continue
 			dataDict["value"] = i.getVal()
 			dataDict["unit"] = i.valUnit
+			dataDict["symbol"] = i.valSymbol
 			dataDict["name"] = i.valName
 			dataDict["sensor"] = i.sensorName
 			data.append(dataDict)
 		working = True
-		print "Hello"
 		for i in outputPlugins:
-			working = working and i.uploadData(data)
+			working = working and i.outputData(data)
 		if working:
-			pass
+			print "Uploaded successfully"
 			#Blink Green
 		else:
-			pass
+			print "Failed to upload"
 			#Blink Red

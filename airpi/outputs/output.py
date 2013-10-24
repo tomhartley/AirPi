@@ -2,5 +2,5 @@ class Output():
 	def __init__(self,data):
 		raise NotImplementedError
 	
-	def uploadData(self,dataPoints):
+	def outputData(self,dataPoints):
 		raise NotImplementedError
