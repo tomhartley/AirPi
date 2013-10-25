@@ -7,6 +7,7 @@ class Print(output.Output):
 	def __init__(self,data):
 		pass
 	def outputData(self,dataPoints):
+		print ""
 		print "Time: " + str(datetime.datetime.now())
 		for i in dataPoints:
 			print i["name"] + ": " + str(i["value"]) + " " + i["symbol"]

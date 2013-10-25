@@ -120,7 +120,6 @@ for i in outputNames:
 			except:
 				print("Error: could not find a subclass of output.Output in module " + filename)
 				raise
-
 			try:	
 				reqd = outputClass.requiredData
 			except:
@@ -129,7 +128,12 @@ for i in outputNames:
 				opt = outputClass.optionalData
 			except:
 				opt = []
-
+			
+			if outputConfig.has_option(i,"async"):
+				async = outputConfig.getbool(i,"async")
+			else:
+				async = False
+			
 			pluginData = {}
 
 			class MissingField(Exception): pass
@@ -144,6 +148,7 @@ for i in outputNames:
 				if outputConfig.has_option(i,optionalField):
 					pluginData[optionalField]=outputConfig.get(i,optionalField)
 			instClass = outputClass(pluginData)
+			instClass.async = async
 			outputPlugins.append(instClass)
 			print ("Success: Loaded output plugin " + i)
 	except Exception as e: #add specific exception for missing module
@@ -168,7 +173,7 @@ while True:
 		for i in sensorPlugins:
 			dataDict = {}
 			val = i.getVal()
-			if val==False: #this means it has no data to upload.
+			if val==None: #this means it has no data to upload.
 				continue
 			dataDict["value"] = i.getVal()
 			dataDict["unit"] = i.valUnit

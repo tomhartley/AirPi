@@ -1,7 +1,8 @@
+
 import sensor
 import bmpBackend
 
-class Bmp085(sensor.Sensor):
+class BMP085(sensor.Sensor):
 	bmpClass = None
 	requiredData = ["measurement","i2cbus"]
 	optionalData = ["altitude","mslp","unit"]
@@ -11,15 +12,6 @@ class Bmp085(sensor.Sensor):
 			self.valName = "Temperature"
 			self.valUnit = "Celsius"
 			self.valSymbol = "C"
-			self.mslp = False
-			if "mslp" in data:
-				self.mslp = data["mslp"]
-				if self.mslp:
-					if "altitude" in data:
-						self.altitude = data["altitude"]
-					else:
-						print "To calculate MSLP, please provide an 'altitude' config setting for the BMP085 (in m)"
-						self.mslp = False
 			if "unit" in data:
 				if data["unit"]=="F":
 					self.valUnit = "Farenheight"
@@ -28,23 +20,28 @@ class Bmp085(sensor.Sensor):
 			self.valName = "Pressure"
 			self.valSymbol = "hPa"
 			self.valUnit = "Hectopascal"
-			self._altitude = 0
+			self.altitude = 0
+			self.mslp = False
 			if "mslp" in data:
 				if data["mslp"].lower in ["on","true","1","yes"]:
+					self.mslp = True
 					if "altitude" in data:
 						self.altitude=data["altitude"]
-		if (!bmpClass):
-			bmpClass = bmpBackend.BMP085(bus=bus)
+					else:
+						print "To calculate MSLP, please provide an 'altitude' config setting (in m) for the BMP085 pressure module"
+						self.mslp = False
+		if (BMP085.bmpClass==None):
+			BMP085.bmpClass = bmpBackend.BMP085(bus=int(data["i2cbus"]))
 		return
 
 	def getVal(self):
-		if self.valName = "Temperature":
-			temp = bmpClass.readTemperature()
-			if self.valUnit = "Fahrenheit":
+		if self.valName == "Temperature":
+			temp = BMP085.bmpClass.readTemperature()
+			if self.valUnit == "Fahrenheit":
 				temp = temp * 1.8 + 32
 			return temp
-		elif self.valName = "Pressure":
+		elif self.valName == "Pressure":
 			if self.mslp:
-				return self.bmpClass.readMSLPressure(self.altitude) * 0.01 #to convert to Hectopascals
+				return BMP085.bmpClass.readMSLPressure(self.altitude) * 0.01 #to convert to Hectopascals
 			else:
-				return self.bmpClass.readPressure() * 0.01 #to convert to Hectopascals
+				return BMP085.bmpClass.readPressure() * 0.01 #to convert to Hectopascals
