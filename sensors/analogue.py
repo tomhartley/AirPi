@@ -17,19 +17,19 @@ class Analogue(sensor.Sensor):
 		if self.pullUp!=None and self.pullDown!=None:
 			print "Please choose whether there is a pull up or pull down resistor for the " + self.valName + " measurement by only entering one of them into the settings file"
 			raise ConfigError
-		if self.pullUp==None and self.pullDown==None:
-			print "Please enter a pull up or pull down resistor for the " + self.valName + " measurement by adding either a 'pullUpResistance' or a 'pullDownResistance' config setting."
-			raise ConfigError
 		self.valUnit = "Ohms"
 		self.valSymbol = "Ohms"
+		if self.pullUp==None and self.pullDown==None:
+			self.valUnit = "millvolts"
+			self.valSymbol = "mV"
 		
 	def getVal(self):
 		result = self.adc.readADC(self.adcPin)
 		if result==0:
-			print "Check wiring for the " + self.valName + " measurement, no input voltage detected on ADC input " + str(self.adcPin)
+			print "Check wiring for the " + self.sensorName + " measurement, no voltage detected on ADC input " + str(self.adcPin)
 			return None
 		if result == 1023:
-			print "Check wiring for the " + self.valName + " measurement, full input voltage detected on ADC input " + str(self.adcPin)
+			print "Check wiring for the " + self.sensorName + " measurement, full voltage detected on ADC input " + str(self.adcPin)
 			return None
 		vin = 3.3
 		vout = float(result)/1023 * vin
@@ -37,7 +37,9 @@ class Analogue(sensor.Sensor):
 		if self.pullDown!=None:
 			#Its a pull down resistor
 			resOut = (self.pullDown*vin)/vout - self.pullDown
-		else:
+		elif self.pullUp!=None:
 			resOut = self.pullUp/((vin/vout)-1)
+		else:
+			resOut = vout*1000
 		return resOut
 		

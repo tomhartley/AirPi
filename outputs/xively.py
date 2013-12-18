@@ -18,6 +18,6 @@ class Xively(output.Output):
 			if z.text!="": 
 				print "Xively Error: " + z.text
 				return False
-		except ConnectionError, e:
+		except Exception:
 			return False
 		return True

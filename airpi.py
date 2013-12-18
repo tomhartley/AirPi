@@ -1,4 +1,6 @@
 #This file takes in inputs from a variety of sensor files, and outputs information to a variety of services
+import sys
+sys.dont_write_bytecode = True
 
 import ConfigParser
 import time
@@ -29,19 +31,19 @@ for i in sensorNames:
 	try:	
 		try:
 			filename = sensorConfig.get(i,"filename")
-		except:
+		except Exception:
 			print("Error: no filename config option found for sensor plugin " + i)
 			raise
 		try:
 			enabled = sensorConfig.getboolean(i,"enabled")
-		except:
+		except Exception:
 			enabled = True
 
 		#if enabled, load the plugin
 		if enabled:
 			try:
 				mod = __import__('sensors.'+filename,fromlist=['a']) #Why does this work?
-			except:
+			except Exception:
 				print("Error: could not import sensor module " + filename)
 				raise
 
@@ -49,17 +51,17 @@ for i in sensorNames:
 				sensorClass = get_subclasses(mod,sensor.Sensor)
 				if sensorClass == None:
 					raise AttributeError
-			except:
+			except Exception:
 				print("Error: could not find a subclass of sensor.Sensor in module " + filename)
 				raise
 
 			try:	
 				reqd = sensorClass.requiredData
-			except:
+			except Exception:
 				reqd =  []
 			try:
 				opt = sensorClass.optionalData
-			except:
+			except Exception:
 				opt = []
 
 			pluginData = {}
@@ -97,19 +99,19 @@ for i in outputNames:
 	try:	
 		try:
 			filename = outputConfig.get(i,"filename")
-		except:
+		except Exception:
 			print("Error: no filename config option found for output plugin " + i)
 			raise
 		try:
 			enabled = outputConfig.getboolean(i,"enabled")
-		except:
+		except Exception:
 			enabled = True
 
 		#if enabled, load the plugin
 		if enabled:
 			try:
 				mod = __import__('outputs.'+filename,fromlist=['a']) #Why does this work?
-			except:
+			except Exception:
 				print("Error: could not import output module " + filename)
 				raise
 
@@ -117,16 +119,16 @@ for i in outputNames:
 				outputClass = get_subclasses(mod,output.Output)
 				if outputClass == None:
 					raise AttributeError
-			except:
+			except Exception:
 				print("Error: could not find a subclass of output.Output in module " + filename)
 				raise
 			try:	
 				reqd = outputClass.requiredData
-			except:
+			except Exception:
 				reqd =  []
 			try:
 				opt = outputClass.optionalData
-			except:
+			except Exception:
 				opt = []
 			
 			if outputConfig.has_option(i,"async"):
