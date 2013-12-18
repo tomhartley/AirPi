@@ -30,13 +30,13 @@ class DHT22(sensor.Sensor):
 		if (time.time()-tm)<2:
 			t, h = dhtreader.lastData
 		else:
-			t = time.time()
+			tim = time.time()
 			try:
 				t, h = dhtreader.read(22,self.pinNum)
 			except Exception:
 				t, h = dhtreader.lastData
 			dhtreader.lastData = (t,h)
-			dhtreader.lastDataTime=t
+			dhtreader.lastDataTime=tim
 		if self.valName == "Temperature":
 			temp = t
 			if self.valUnit == "Fahrenheit":

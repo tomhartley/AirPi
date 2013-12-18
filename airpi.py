@@ -2,6 +2,7 @@
 import sys
 sys.dont_write_bytecode = True
 
+import RPi.GPIO as GPIO
 import ConfigParser
 import time
 import inspect
@@ -25,6 +26,8 @@ sensorConfig.read('sensors.cfg')
 
 sensorNames = sensorConfig.sections()
 
+GPIO.setwarnings(False)
+GPIO.setmode(GPIO.BCM) #Use BCM GPIO numbers.
 
 sensorPlugins = []
 for i in sensorNames:
@@ -165,7 +168,10 @@ mainConfig.read("settings.cfg")
 
 lastUpdated = 0
 delayTime = mainConfig.getfloat("Main","uploadDelay")
-
+redPin = mainConfig.getint("Main","redPin")
+greenPin = mainConfig.getint("Main","greenPin")
+GPIO.setup(redPin,GPIO.OUT,initial=GPIO.LOW)
+GPIO.setup(greenPin,GPIO.OUT,initial=GPIO.LOW)
 while True:
 	curTime = time.time()
 	if (curTime-lastUpdated)>delayTime:
@@ -188,7 +194,10 @@ while True:
 			working = working and i.outputData(data)
 		if working:
 			print "Uploaded successfully"
-			#Blink Green
+			GPIO.output(greenPin,GPIO.HIGH)
 		else:
 			print "Failed to upload"
-			#Blink Red
+			GPIO.output(redPin,GPIO.HIGH)
+		time.sleep(1)
+		GPIO.output(greenPin,GPIO.LOW)
+		GPIO.output(redPin,GPIO.LOW)
