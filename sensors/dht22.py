@@ -1,4 +1,3 @@
-
 import sensor
 import dhtreader
 import time
@@ -17,7 +16,7 @@ class DHT22(sensor.Sensor):
 			self.valSymbol = "C"
 			if "unit" in data:
 				if data["unit"]=="F":
-					self.valUnit = "Farenheight"
+					self.valUnit = "Fahrenheit"
 					self.valSymbol = "F"
 		elif "h" in data["measurement"].lower():
 			self.valName = "Relative_Humidity"
