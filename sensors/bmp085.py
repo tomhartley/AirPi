@@ -1,4 +1,3 @@
-
 import sensor
 import bmpBackend
 
@@ -14,7 +13,7 @@ class BMP085(sensor.Sensor):
 			self.valSymbol = "C"
 			if "unit" in data:
 				if data["unit"]=="F":
-					self.valUnit = "Farenheight"
+					self.valUnit = "Fahrenheit"
 					self.valSymbol = "F"
 		elif "pres" in data["measurement"].lower():
 			self.valName = "Pressure"
