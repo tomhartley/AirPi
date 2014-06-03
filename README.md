@@ -9,4 +9,4 @@ Currently it is split into airpi.py, as well as multiple input and multiple outp
 
 Some of the files are based off code for the Raspberry Pi written by Adafruit: https://github.com/adafruit/Adafruit-Raspberry-Pi-Python-Code
 
-For installation instructions, see airpi.es/kit.php
+For installation instructions, see http://airpi.es/kit.php
