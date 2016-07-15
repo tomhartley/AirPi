@@ -149,7 +149,7 @@ If you have registered with https://xively.com - you can add your API Key and Fe
 
 AirPi **must** be run as root.
 
-`sudo python Airpie.py`
+`sudo python airpi.py`
 
 If everything is working, you should see output similar to this:
 
